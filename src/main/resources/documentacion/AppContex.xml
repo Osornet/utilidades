@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+    xmlns="http://www.springframework.org/schema/beans" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:p="http://www.springframework.org/schema/p" 
+    xmlns:c="http://www.springframework.org/schema/c" xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--se pueden importar archivos xml con más beans-->
+    <import resource = "AppContex2.xml"/>
+    <bean id="admin" class="com.osornet.estudio.spring.Administrador"/>
+    <bean id = "A" class="com.osornet.estudio.documentacion.AImp"/>
+    <bean id = "Av2" class="com.osornet.estudio.documentacion.AImpv2" />
+    <alias name = "Av2" alias = "AliasA" />
+    <!--devuelve la intancia que devuelve metodo estatico Factory que tiene la clase especificada
+    en el atributo class-->
+    <bean id = "AFactory"     class = "com.osornet.estudio.documentacion.AFactory"     factory-method = "getA" />
+    <!--crea un bean a partir de una clase que tiene tienen un metodo estico de fabrica -->
+    <!--bean que tiene metodos de fabrica-->
+    <bean id = "fabrica" class="com.osornet.estudio.documentacion.ABFactory"/>
+    <!--beans que se obtiene con el return de esos metodos de fabrica-->
+    <bean id = "AImp" factory-bean = "fabrica" factory-method = "getA"/>
+    <bean id = "BImp" factory-bean = "fabrica" factory-method = "getB"/>
+    <!--inyeccion de depencias (DI) por costructor-->
+    <bean id = "CImp" class = "com.osornet.estudio.documentacion.CImp" autowire-candidate = "true">
+        <constructor-arg ref = "AImp"/>
+        <constructor-arg ref = "BImp"/>
+        <constructor-arg type = "int" value = "100"/>
+        <constructor-arg type = "java.lang.String" value = "cadena"/>
+        <constructor-arg index = "4" value = "2.0"/>
+        <constructor-arg index = "5" value = "2.0"/>
+        <constructor-arg name = "av2" ref = "Av2"/>
+        <constructor-arg name = "flot3" value = "2.0"/>
+    </bean>
+    <!--inyeccion de depedencias (DI) por setter-->
+    <bean id = "DImp" class = "com.osornet.estudio.documentacion.DImp">
+        <property name = "a" ref = "AImp"/>
+        <property name = "mensajeDeMetodo" value = "Metodo 3"/>
+    </bean>
+    <!--inyeccion de depedencias (DI) por metodo estatico de fabrica-->
+    <bean id = "EImp" class = "com.osornet.estudio.documentacion.EImp" factory-method = "getInstance">
+        <constructor-arg name = "mensajeMetodoE" value = "metodo E"/>
+        <constructor-arg name = "b" ref = "BImp"/>
+    </bean>
+    <!--Ejemplo de inyeccion de Pedencias(DI) usando el namespace P (xmlns:p="http://www.springframework.org/schema/p")-->
+    <bean id = "FImp" class = "com.osornet.estudio.documentacion.FImp"
+        p:cadena = "Yo soy cadena"
+        p:entero = "100"
+        p:flotante = "2.5"
+        p:b-ref = "BImp">
+        <property name = "listaDeEnteros">
+            <list>
+                <value>1</value>
+                <value>2</value>
+                <value>3</value>
+                <value>4</value>
+            </list>
+        </property>
+        <property name = "listaDeA">
+            <list>
+                <ref bean= "A"/>
+                <ref bean = "Av2"/>
+            </list>
+        </property>
+        <property name = "valorNulo">
+            <null/>
+        </property>
+    </bean>
+    <!--Ejemplo de inyeccion de Pedencias(DI) usando el namespace C ( xmlns:c="http://www.springframework.org/schema/c")-->
+    <bean id ="GImp" class="com.osornet.estudio.documentacion.GImp"          c:cadena = "yo soy la cadena de GImp"
+        c:_1 = "100"
+        c:a-ref = "AImp" />
+    <!--Ejemplo de Inyeccion de dependecias por metodos (sin argumentos) (lookup methods)-->
+    <!--dependencia inyectada (debe ser con un scope prototype)-->
+    <bean id ="AImpPro" class = "com.osornet.estudio.documentacion.AImp" scope = "prototype" />
+    <!--Clase que contienen el metodo abstracto que retornara la dependencia inyectada-->
+    <bean id = "ClaseA" class = "com.osornet.estudio.documentacion.ClaseA">
+        <lookup-method name = "createA" bean = "AImpPro"/>
+    </bean>
+    <!--Compound property names-->
+    <!-- <bean id = "HImp" class = "com.osornet.estudio.documentacion.HImp"
+        p:c-ref = "CImp"
+        p:c.entero = "200"
+    > -->
+       <!--  <property name = "c" ref = "CImp"/>
+        <property name = "c.entero" value = "200"/> -->
+    <!-- </bean> -->
+    <!-- atributo autowire-->
+    <!-- atributo autowire por nombre-->
+    <!-- <bean id ="HImpv2" class = "com.osornet.estudio.documentacion.HImp" autowire = "byName"/>
+    
+    <bean id = "c" class = "com.osornet.estudio.documentacion.CImp">
+        <constructor-arg ref = "AImp"/>
+        <constructor-arg ref = "BImp"/>
+        <constructor-arg type = "int" value = "500"/>
+        <constructor-arg type = "java.lang.String" value = "cadena"/>
+        <constructor-arg index = "4" value = "2.0"/>
+        <constructor-arg index = "5" value = "2.0"/>
+        <constructor-arg name = "av2" ref = "Av2"/>
+        <constructor-arg name = "flot3" value = "2.0"/>
+    </bean> -->
+
+    <bean id ="HImpv2" class = "com.osornet.estudio.documentacion.HImp" autowire = "constructor"/>
+    
+    <bean class = "com.osornet.estudio.documentacion.CImp" autowire-candidate = "false">
+        <constructor-arg ref = "AImp"/>
+        <constructor-arg ref = "BImp"/>
+        <constructor-arg type = "int" value = "500"/>
+        <constructor-arg type = "java.lang.String" value = "cadena"/>
+        <constructor-arg index = "4" value = "2.0"/>
+        <constructor-arg index = "5" value = "2.0"/>
+        <constructor-arg name = "av2" ref = "Av2"/>
+        <constructor-arg name = "flot3" value = "2.0"/>
+    </bean>
+
+
+    <!--Reemplazo arbitrario de metodo-->
+    <bean id = "MiValorDeCalculadora" class = "com.osornet.estudio.documentacion.MiValorDeCalculadora">
+        <replaced-method name = "computarValor" replacer = "ReemplazoComputarValor">
+        <arg-type>String</arg-type>
+        </replaced-method>
+    </bean>
+    <bean id = "ReemplazoComputarValor" class = "com.osornet.estudio.documentacion.ReemplazoComputarValor"/>
+</beans>
