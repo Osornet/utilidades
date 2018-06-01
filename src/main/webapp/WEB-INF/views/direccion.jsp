@@ -16,27 +16,23 @@
         })
         
     </script>
-    <title>Admin</title>
+    <title>Direccion</title>
 </head>
 <body>
-    <h1>Admin.jsp</h1>
-    <form:form action="${pageContext.request.contextPath}/admin/save" method="post" modelAttribute="admin">
+    <h1>Agregar Direcciones <c:out value="${sessionScope.admin.nombre}"/></h1>
+    
+    <form:form action="${pageContext.request.contextPath}/direccion/save" method="post" modelAttribute="direccion">
         <table>
-            <c:if test="${admin.idAd ne 0}">
-                <form:input type="hidden" path="idAd"/>
-                <form:input type="hidden" path="fechaCreacion"/>        
+            <c:if test="${direccion.idDir ne 0}">
+                <form:input type="hidden" path="idDir"/>
             </c:if>
             <tr>
-                <td>Estado:</td>
-                <td><input type="text" name = "estado"/></td>
+                <td>Calle</td>
+                <td><form:input type="text" path="calle"/></td>
             </tr>
             <tr>
-                <td>nombre</td>
-                <td><form:input type="text" path="nombre"/></td>
-            </tr>
-            <tr>
-                <td>Cargo</td>
-                <td><form:input type="text" path="cargo"/></td>
+                <td>CP</td>
+                <td><form:input type="text" path="cp"/></td>
             </tr>
             <tr>
                 <td><input type="submit" value="Guardar Cambios"/></td>
@@ -45,12 +41,12 @@
     </form:form>
     <c:out value="${resultado}"/><br/>
 
-    <c:forEach var="admin" items="${admins}">
-        <c:out value="${admin}"/>
-        <a href="<c:url value='/direccion/${admin.idAd}'/>">Direcciones</a>
-        <a href="<c:url value='/admin/${admin.idAd}/update'/>">Actualizar</a>
-        <a class="confirm" href="<c:url value='/admin/${admin.idAd}/delete'/>">Eliminar</a>
+    <c:forEach var="direccion" items="${direcciones}">
+        <c:out value="${direccion}"/>
+        <a href="<c:url value='/direccion/${direccion.idDir}/update'/>">Actualizar</a>
+        <a class="confirm" href="<c:url value='/direccion/${direccion.idDir}/delete'/>">Eliminar</a>
         <br/>
     </c:forEach>
+    <a href="<c:url value='/admin'/>">volver a admin</a>
 </body>
 </html>

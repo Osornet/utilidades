@@ -1,13 +1,33 @@
 package com.osornet.estudio.spring.pojo;
 
 import java.sql.Timestamp;
+import java.util.Set;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+
+
+
+@Entity
+@Table(name ="admin")
 public class Admin {
 
+    @Id
+    @GeneratedValue
     private int idAd;
+    //@Column(name = "nombre")
     private String nombre;
     private String cargo;
     private Timestamp fechaCreacion;
+    @OneToMany(mappedBy="admin")
+    private Set<Direccion> direcciones;
 
     public Admin(){}
 
@@ -73,7 +93,18 @@ public class Admin {
     public void setFechaCreacion(Timestamp fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }
-
+    /**
+     * @return the direcciones
+     */
+    public Set<Direccion> getDirecciones() {
+        return direcciones;
+    }
+    /**
+     * @param direcciones the direcciones to set
+     */
+    public void setDirecciones(Set<Direccion> direcciones) {
+        this.direcciones = direcciones;
+    }
     @Override
     public String toString() {
         return "Admin[idAd= "+this.idAd+", nombre= "+this.nombre+", cargo= "+this.cargo+", fechaCreacion= "+this.fechaCreacion.toString()+"]";

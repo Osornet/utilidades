@@ -10,6 +10,7 @@ import java.util.List;
 
 
 import com.osornet.estudio.spring.dao.AdminDao;
+import com.osornet.estudio.spring.dao.AdminDaoImp;
 import com.osornet.estudio.spring.pojo.Admin;
 
 import org.springframework.context.ApplicationContext;
@@ -19,21 +20,14 @@ import org.springframework.jdbc.CannotGetJdbcConnectionException;
 
 public class MainApp{
     public static void main(String[] args) {
-        ApplicationContext contenedor = new ClassPathXmlApplicationContext("spring/estudioSpring.xml");
+        ApplicationContext contenedor = new ClassPathXmlApplicationContext("spring/springMVC/persistence-context.xml");
         
         AdminDao adminDao = contenedor.getBean(AdminDao.class,"adminDao");
-        Timestamp ts = new Timestamp(new Date().getTime());
-        try {
-                        
-           System.out.println(new Admin());
-            
-                
-        } catch (CannotGetJdbcConnectionException e) {
-            e.printStackTrace();
-        } catch (DataAccessException e){
-            e.printStackTrace();
-        }
+        Timestamp fechaCreacion = new Timestamp(new Date().getTime());
 
+        Admin admin = adminDao.findById(1);
+        
+        System.out.println(admin);
         
         ((ClassPathXmlApplicationContext)contenedor).close();
     }

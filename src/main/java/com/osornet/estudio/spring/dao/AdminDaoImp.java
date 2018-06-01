@@ -2,119 +2,97 @@ package com.osornet.estudio.spring.dao;
 
 
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
-import javax.sql.DataSource;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import com.osornet.estudio.spring.pojo.Admin;
-import com.osornet.estudio.spring.pojo.AdminRowMapper;
 
+import org.hibernate.query.Query;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+
+
+
 
 /**
  * AdminDaoImp
  */
-@Component("adminDao")
+@Transactional
+@Repository
 public class AdminDaoImp implements AdminDao{
 
-    private NamedParameterJdbcTemplate jdbcTemplate;
+	@Autowired
+	private SessionFactory sessionFactory;
 
-    
-    public boolean save(Admin admin) {
-        /* MapSqlParameterSource paramMap = new MapSqlParameterSource();
-        paramMap.addValue("nombre", admin.getNombre());
-        paramMap.addValue("cargo", admin.getCargo());
-        paramMap.addValue("fechaCreacion", admin.getFechaCreacion()); */
 
-        BeanPropertySqlParameterSource paramMap = new BeanPropertySqlParameterSource(admin);
+	public Session getSession() {
+		return this.sessionFactory.getCurrentSession();
+	}
 
-        return jdbcTemplate.update("INSERT into admin(nombre, cargo, fechaCreacion) values"+
-        "(:nombre, :cargo, :fechaCreacion)", paramMap) == 1;
-        
-    }
-    
 
-    @Autowired
-    private void setDataSource(DataSource dataSource){
-        this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-    }
-
+	public void save(Admin admin) {
+		this.getSession().save(admin);
+	}
 
 	public List<Admin> findAll() {
-		return this.jdbcTemplate.query("SELECT * FROM admin", new RowMapper<Admin>(){
-            public Admin mapRow(ResultSet rs, int rowNum) throws SQLException {
-                Admin admin = new Admin();
+		Query<Admin> query = this.getSession().createQuery("from Admin admin",Admin.class);
 
-                admin.setIdAd(rs.getInt("idAd"));
-                admin.setCargo(rs.getString("cargo"));
-                admin.setFechaCreacion(rs.getTimestamp("fechaCreacion"));
-                admin.setNombre(rs.getString("nombre"));
-                
-                return admin;
-            }
-        });
+		return query.list();
 	}
-
 
 	public Admin findById(int id) {
-       /*  return (Admin) this.jdbcTemplate.query("SELECT * FROM admin WHERE idAd = :idAd",
-        new MapSqlParameterSource("idAd", id), new AdminRowMapper());
-        */
-        return this.jdbcTemplate.queryForObject("SELECT * FROM admin WHERE idAd = :idAd",
-        new MapSqlParameterSource("idAd", id), new AdminRowMapper());
+		
+		//forma actual de criterios con jpa
+		/* CriteriaBuilder builder = this.getSession().getCriteriaBuilder();
+		CriteriaQuery<Admin> criteriaQuery = builder.createQuery(Admin.class);
+		Root<Admin> adminRoot = criteriaQuery.from(Admin.class);
+		criteriaQuery.select(adminRoot);
+		criteriaQuery.where(builder.equal(adminRoot.get("idAd"),id));
+		Query<Admin> query = this.getSession().createQuery(criteriaQuery);
+		return query.getSingleResult();  */
 
+		//criteria de hibernate
+		/* Criteria criteria = this.getSession().createCriteria(Admin.class);
+		criteria.add(Restrictions.eq("idAd", id));
+		return (Admin)criteria.uniqueResult(); */
+
+		//la que se usa comunente
+		return this.getSession().get(Admin.class,id);
+		
 	}
 
-
+	@SuppressWarnings("unchecked")
 	public List<Admin> findByName(String nombre) {
-        String consulta = "SELECT * FROM admin WHERE nombre like :nombre";
-        MapSqlParameterSource parametro = new MapSqlParameterSource("nombre", "%"+nombre+"%");
-        AdminRowMapper adminRowMapper = new AdminRowMapper();
-
-        return this.jdbcTemplate.query(consulta, parametro, adminRowMapper);
-    }
-
-
-	public boolean update(Admin admin) {
-        String consulta = "UPDATE admin set nombre=:nombre, "+
-        "cargo=:cargo, fechaCreacion=:fechaCreacion "+
-        "WHERE idAd=:idAd";
-        BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(admin);
-        return this.jdbcTemplate.update(consulta, parameterSource)==1;
+		//con JPA
+		/* CriteriaBuilder builder = this.getSession().getCriteriaBuilder();
+		CriteriaQuery<Admin> consulta = builder.createQuery(Admin.class);
+		Path<String> nombreAdm = consulta.from(Admin.class).get("nombre");
+		consulta.where(builder.like(nombreAdm,"%"+nombre+"%"));
+		List<Admin> admins= this.getSession().createQuery(consulta).getResultList(); */
+		Criteria criteria = this.getSession().createCriteria(Admin.class);
+		criteria.add(Restrictions.like("nombre","%"+nombre+"%"));
+		List<Admin> admins = criteria.list();
+		return admins;
 	}
 
-
-	public boolean delete(int idAd) {
-        String consulta = "DELETE FROM admin WHERE idAd=:idAd";
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource("idAd",idAd);
-        return this.jdbcTemplate.update(consulta, parameterSource)==1;
+	public void update(Admin admin) {
+		this.getSession().update(admin);
 	}
 
-    @Transactional
-	public int[] saveAll(List<Admin> admins) {
-		String consulta = "INSERT into admin(idAd, nombre, cargo, fechaCreacion) values"+
-        "(:idAd, :nombre, :cargo, :fechaCreacion)";
-        SqlParameterSource[] batchArgs = SqlParameterSourceUtils.createBatch(admins.toArray());
-
-        return this.jdbcTemplate.batchUpdate(consulta, batchArgs);
+	public void delete(Admin admin) {
+		this.getSession().delete(admin);
 	}
 
-
-	public int[] deleteAll(List<Admin> admins) {
-        String consulta = "DELETE FROM admin WHERE idAd=:idAd";
-        SqlParameterSource[] batchArgs = SqlParameterSourceUtils.createBatch(admins.toArray());
-
-        return this.jdbcTemplate.batchUpdate(consulta, batchArgs);
-	}
+  
 
 }

@@ -1,20 +1,28 @@
 package com.osornet.estudio.spring.pojo;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+
 
 /**
  * Direccion
  */
-@Component
+@Entity
+@Table(name="direccion")
 public class Direccion {
-
-   
-    //@Value("Encino") //puede utilizarse solo el @value
+    @Id
+    @GeneratedValue
+    private int idDir;  
     private String calle;
-    //@Value("99999")    
     private String cp;
+    @ManyToOne
+    @JoinColumn(name="idAd")
+    private Admin admin;
 
     public Direccion(){}
 
@@ -22,23 +30,58 @@ public class Direccion {
         this.calle = calle;
         this.cp = cp;
     }
-    @Override
-    public String toString() {
-        return "Direccion [ calle= "+this.calle+", cp= "+this.cp+" ]";
+    /**
+     * @return the idDir
+     */
+    public int getIdDir() {
+        return idDir;
+    }
+    /**
+     * @param idDir the idDir to set
+     */
+    public void setIdDir(int idDir) {
+        this.idDir = idDir;
+    }
+    /**
+     * @return the calle
+     */
+    public String getCalle() {
+        return calle;
     }
     /**
      * @param calle the calle to set
      */
-    //@Inject //tambien podemos usar @Inject en vez de @Autowired
-    @Autowired
-    public void setCalle(@Value("Encino") String calle) {
+    public void setCalle(String calle) {
         this.calle = calle;
+    }
+    /**
+     * @return the cp
+     */
+    public String getCp() {
+        return cp;
     }
     /**
      * @param cp the cp to set
      */
-    @Autowired
-    public void setCp(@Value("400") String cp) {
+    public void setCp(String cp) {
         this.cp = cp;
     }
+
+    /**
+     * @return the admin
+     */
+    public Admin getAdmin() {
+        return admin;
+    }
+    /**
+     * @param admin the admin to set
+     */
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
+    @Override
+    public String toString() {
+        return "Direccion=[idDir="+this.idDir+", calle="+this.calle+", cp="+this.cp+"]";
+    }
+   
 }
