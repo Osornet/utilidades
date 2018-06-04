@@ -9,9 +9,11 @@
     <title>Documento Index</title>
 </head>
 <body>
+    <c:import url="/WEB-INF/views/menu.jsp"/>
     <h1>Index</h1>
     <a href="<c:url value='/about'/>">Acerca de</a><br/>
     <a href="<c:url value='/admin'/>">Gestionar Administradores</a><br/>
+    <a href="<c:url value='/usuario'/>">Gestionar Usuarios</a><br/>
     
     
 </body>

@@ -21,36 +21,29 @@
 <body>
     <c:import url="/WEB-INF/views/menu.jsp"/>
     <h1>Admin.jsp</h1>
-    <form:form action="${pageContext.request.contextPath}/admin/save" method="post" modelAttribute="admin">
+    <form:form action="${pageContext.request.contextPath}/usuario/save" method="post" modelAttribute="usuario">
         <table>
-            <c:if test="${admin.idAd ne 0}">
-                <form:input type="hidden" path="idAd"/>
-                <form:input type="hidden" path="fechaCreacion"/>        
-            </c:if>
             <tr>
-                <td>Estado:</td>
-                <td><input type="text" name = "estado"/></td>
+                <td>Usuario</td>
+                <td><form:input type="text" path="usuario"/></td>
             </tr>
             <tr>
-                <td>nombre</td>
-                <td><form:input type="text" path="nombre"/></td>
+                <td>Contraseña</td>
+                <td><form:input type="password" path="clave"/></td>
             </tr>
-            <tr>
-                <td>Cargo</td>
-                <td><form:input type="text" path="cargo"/></td>
+             <tr>
+                <td>Permisos</td>
+                <td><form:input type="text" path="permiso"/></td>
             </tr>
             <tr>
                 <td><input type="submit" value="Guardar Cambios"/></td>
             </tr>
         </table>
     </form:form>
-    <c:out value="${resultado}"/><br/>
+    
 
-    <c:forEach var="admin" items="${admins}">
-        <c:out value="${admin}"/>
-        <a href="<c:url value='/direccion/${admin.idAd}'/>">Direcciones</a>
-        <a href="<c:url value='/admin/${admin.idAd}/update'/>">Actualizar</a>
-        <a class="confirm" href="<c:url value='/admin/${admin.idAd}/delete'/>">Eliminar</a>
+    <c:forEach var="usuario" items="${usuarios}">
+        <c:out value="${usuario.usuario}"/>
         <br/>
     </c:forEach>
 </body>

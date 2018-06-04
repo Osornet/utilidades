@@ -19,6 +19,7 @@
     <title>Direccion</title>
 </head>
 <body>
+    <c:import url="/WEB-INF/views/menu.jsp"/>
     <h1>Agregar Direcciones <c:out value="${sessionScope.admin.nombre}"/></h1>
     
     <form:form action="${pageContext.request.contextPath}/direccion/save" method="post" modelAttribute="direccion">
