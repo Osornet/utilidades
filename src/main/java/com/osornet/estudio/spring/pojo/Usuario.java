@@ -8,6 +8,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import javax.validation.constraints.Size;
+
+import com.osornet.estudio.spring.pojo.valid.PersistenceGroup;
+import com.osornet.estudio.spring.pojo.valid.SpringFormGroup;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
+
+
+
 /**
  * Usuario
  */
@@ -17,8 +27,12 @@ public class Usuario {
     @Id
     @GeneratedValue
     private int idUsr;
+    @NotEmpty(message=Constants.NOT_EMPTY,groups={PersistenceGroup.class, SpringFormGroup.class})
     private String usuario;
+    @NotEmpty(message=Constants.NOT_EMPTY,groups={PersistenceGroup.class, SpringFormGroup.class})
+    @Size(min=3, max=8, message=Constants.SIZE, groups={SpringFormGroup.class})
     private String clave;
+    @NotEmpty(message=Constants.NOT_EMPTY,groups={PersistenceGroup.class, SpringFormGroup.class})
     private String permiso;
     private Timestamp fechaCreacion;
     
@@ -86,6 +100,6 @@ public class Usuario {
 
     @Override
     public String toString() {
-        return super.toString();
+        return "Usuario=[idUsr="+this.idUsr+",usuario="+this.usuario+",clave="+this.clave+",permiso="+this.permiso+",fechaCreacion="+this.fechaCreacion.toString()+"]";
     }
 }

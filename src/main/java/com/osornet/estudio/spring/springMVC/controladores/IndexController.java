@@ -26,8 +26,10 @@ public class IndexController {
         return "index";
     }
     @RequestMapping("/about")
-    public String showAbout() {
-        
+    public String showAbout()throws Exception {
+        if(true){
+            throw new Exception();
+        }
         return "about";
     }
     @RequestMapping("/login")

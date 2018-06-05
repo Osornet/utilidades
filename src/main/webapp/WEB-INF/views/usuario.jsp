@@ -25,15 +25,27 @@
         <table>
             <tr>
                 <td>Usuario</td>
-                <td><form:input type="text" path="usuario"/></td>
+                <td>
+                    <form:input type="text" path="usuario"/>
+                    <form:errors path="usuario" cssStyle="color:red"/>
+                </td>
+                
             </tr>
             <tr>
                 <td>Contraseña</td>
-                <td><form:input type="password" path="clave"/></td>
+                <td>
+                    <form:input type="password" path="clave"/>
+                    <form:errors path="clave" cssStyle="color:red"/>
+                </td>
+                
             </tr>
              <tr>
                 <td>Permisos</td>
-                <td><form:input type="text" path="permiso"/></td>
+                <td>
+                    <form:input type="text" path="permiso"/>
+                    <form:errors path="permiso" cssStyle="color:red"/>
+                </td> 
+               
             </tr>
             <tr>
                 <td><input type="submit" value="Guardar Cambios"/></td>
@@ -43,7 +55,7 @@
     
 
     <c:forEach var="usuario" items="${usuarios}">
-        <c:out value="${usuario.usuario}"/>
+        <c:out value="${usuario}"/>
         <br/>
     </c:forEach>
 </body>
